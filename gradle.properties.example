@@ -1,0 +1,12 @@
+org.gradle.jvmargs=-Xmx2G
+org.gradle.daemon=false
+
+minecraft_version = 1.16.5
+forge_version = 36.2.30
+
+version = 1.0.0
+
+mods.extra_mods = true
+
+mods.dev_auth = true
+mods.shutup_experimental_settings = true

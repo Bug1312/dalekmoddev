@@ -1,0 +1,38 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# vs
+.vscode
+
+# gradle
+build
+.gradle
+gradle
+
+# other
+eclipse
+run
+svr
+gradle.properties
+src/generated
+src/test
+mods
+*.jar
+
+# Files from Forge MDK
+forge*changelog.txt
+/.apt_generated/
+/.apt_generated_tests/
+/home/

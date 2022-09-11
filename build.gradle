@@ -1,0 +1,104 @@
+buildscript {
+	repositories {
+		maven { url = 'https://maven.minecraftforge.net' }
+		mavenCentral()
+	}
+	dependencies {
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+		classpath 'org.spongepowered:mixingradle:0.7.+'
+	}
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+version = "${project.property('version')}"
+group = 'com.bug1312.dalekmoddev'
+archivesBaseName = 'dalekmoddev'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+File modsPath = new File('./mods')
+if (!modsPath.exists()) modsPath.mkdirs()
+
+minecraft {
+	mappings channel: 'official', version: minecraft_version
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+	runs {
+		client {
+			workingDirectory project.file('run')
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+
+			property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
+			mods {
+				dalekmoddev {
+					source sourceSets.main
+				}
+			}
+		}
+	}
+}
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+	maven { url = "https://maven.enginehub.org/repo/" }
+	maven { url = "https://cursemaven.com" }
+	maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
+}
+
+dependencies {
+	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+	implementation fg.deobf("curse.maven:the-dalek-mod-59654:3974844")
+
+	if(project.property('mods.extra_mods').toBoolean()) {
+		runtimeOnly fileTree(dir: './mods', include: '*.jar')
+
+		if (project.property('mods.dev_auth').toBoolean()) runtimeOnly fg.deobf("me.djtheredstoner:DevAuth-forge-latest:1.1.0")
+		if (project.property('mods.shutup_experimental_settings').toBoolean()) runtimeOnly fg.deobf("curse.maven:shutup-experimental-settings-407174:3188120")
+	}
+
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+mixin {
+	add sourceSets.main, 'mixins.dalekmoddev.refmap.json'
+	config 'mixins.dalekmoddev.json'
+}
+
+jar {
+	manifest {
+		attributes([
+			"Specification-Title": "dalekmoddev",
+			"Specification-Vendor": "bug1312",
+			"Specification-Version": "${version}",
+			"Implementation-Title": project.jar.baseName,
+			"Implementation-Version": project.jar.archiveVersion,
+			"Implementation-Vendor" : "bug1312",
+			"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+		])
+	}
+}
+
+jar.finalizedBy('reobfJar')
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact jar
+		}
+	}
+	repositories {
+		maven {
+			url "file:///${project.projectDir}/mcmodsrepo"
+		}
+	}
+}
+
