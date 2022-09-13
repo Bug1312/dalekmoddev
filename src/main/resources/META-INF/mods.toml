@@ -28,6 +28,6 @@ description='''Tools used by Dalek Mod developers when making the mod. Perhaps t
 [[dependencies.dalekmoddev]]
     modId="dalekmod"
     mandatory=true
-    versionRange="[65.0.0,)"
+    versionRange="[v65.0.0],[v65.0.1],[65.1.0,)" # Dalek Mod versioning used a 'v' for no reason for 65.0.X
     ordering="NONE"
     side="BOTH"

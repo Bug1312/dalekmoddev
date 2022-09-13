@@ -26,16 +26,12 @@ if (!modsPath.exists()) modsPath.mkdirs()
 
 minecraft {
 	mappings channel: 'official', version: minecraft_version
-	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
 	runs {
 		client {
 			workingDirectory project.file('run')
 			property 'forge.logging.markers', 'REGISTRIES'
 			property 'forge.logging.console.level', 'debug'
-
-			property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
 			mods {
 				dalekmoddev {
@@ -56,21 +52,14 @@ repositories {
 dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-	implementation fg.deobf("curse.maven:the-dalek-mod-59654:3974844")
+	implementation fg.deobf("curse.maven:the-dalek-mod-59654:3974844") // 65.1.0
+// 	implementation fg.deobf("curse.maven:the-dalek-mod-59654:3595382") // 65.0.1
+// 	implementation fg.deobf("curse.maven:the-dalek-mod-59654:3594060") // 65.0.0
 
 	if(project.property('mods.extra_mods').toBoolean()) {
-		runtimeOnly fileTree(dir: './mods', include: '*.jar')
-
 		if (project.property('mods.dev_auth').toBoolean()) runtimeOnly fg.deobf("me.djtheredstoner:DevAuth-forge-latest:1.1.0")
 		if (project.property('mods.shutup_experimental_settings').toBoolean()) runtimeOnly fg.deobf("curse.maven:shutup-experimental-settings-407174:3188120")
 	}
-
-	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-}
-
-mixin {
-	add sourceSets.main, 'mixins.dalekmoddev.refmap.json'
-	config 'mixins.dalekmoddev.json'
 }
 
 jar {
