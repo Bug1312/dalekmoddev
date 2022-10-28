@@ -4,7 +4,7 @@ license="MIT"
 issueTrackerURL="https://github.com/Bug1312/dalekmoddev/issues"
 [[mods]]
 modId="dalekmoddev"
-version="1.0.0"
+version="1.1.0"
 displayName="Dalek Mod Dev Tools"
 displayURL="https://github.com/Bug1312/dalekmoddev"
 logoFile="logo.png"
